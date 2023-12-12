@@ -2,7 +2,9 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface ChangeRecord { 'change_type' : string, 'timestamp' : bigint }
-export type Error = { 'NotFound' : { 'msg' : string } };
+export type Error = { 'InvalidInput' : { 'msg' : string } } |
+  { 'NotFound' : { 'msg' : string } } |
+  { 'AuthenticationFailed' : null };
 export interface PatientDetails {
   'id' : bigint,
   'patient_name' : string,
@@ -12,6 +14,7 @@ export interface PatientDetails {
   'in_clinic' : boolean,
   'next_appointment' : bigint,
   'doctor_name' : string,
+  'admin_principal' : string,
 }
 export interface PatientDetailsPayload {
   'patient_name' : string,
@@ -25,7 +28,7 @@ export type Result = { 'Ok' : PatientDetails } |
 export type Result_1 = { 'Ok' : boolean } |
   { 'Err' : Error };
 export interface _SERVICE {
-  'add_patient' : ActorMethod<[PatientDetailsPayload], [] | [PatientDetails]>,
+  'add_patient' : ActorMethod<[PatientDetailsPayload], Result>,
   'bulk_update_patients' : ActorMethod<
     [Array<[bigint, PatientDetailsPayload]>],
     Array<Result>

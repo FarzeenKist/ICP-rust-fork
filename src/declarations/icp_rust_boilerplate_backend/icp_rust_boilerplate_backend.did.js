@@ -15,8 +15,13 @@ export const idlFactory = ({ IDL }) => {
     'in_clinic' : IDL.Bool,
     'next_appointment' : IDL.Nat64,
     'doctor_name' : IDL.Text,
+    'admin_principal' : IDL.Text,
   });
-  const Error = IDL.Variant({ 'NotFound' : IDL.Record({ 'msg' : IDL.Text }) });
+  const Error = IDL.Variant({
+    'InvalidInput' : IDL.Record({ 'msg' : IDL.Text }),
+    'NotFound' : IDL.Record({ 'msg' : IDL.Text }),
+    'AuthenticationFailed' : IDL.Null,
+  });
   const Result = IDL.Variant({ 'Ok' : PatientDetails, 'Err' : Error });
   const ChangeRecord = IDL.Record({
     'change_type' : IDL.Text,
@@ -24,11 +29,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result_1 = IDL.Variant({ 'Ok' : IDL.Bool, 'Err' : Error });
   return IDL.Service({
-    'add_patient' : IDL.Func(
-        [PatientDetailsPayload],
-        [IDL.Opt(PatientDetails)],
-        [],
-      ),
+    'add_patient' : IDL.Func([PatientDetailsPayload], [Result], []),
     'bulk_update_patients' : IDL.Func(
         [IDL.Vec(IDL.Tuple(IDL.Nat64, PatientDetailsPayload))],
         [IDL.Vec(Result)],
